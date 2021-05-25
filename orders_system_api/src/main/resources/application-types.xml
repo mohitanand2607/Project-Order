@@ -1,0 +1,44 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<types:mule xmlns:types="http://www.mulesoft.org/schema/mule/types">
+  <types:catalog>
+    <types:type name="getAllOrders" format="json">
+      <types:shape format="weave" example="examples/getAllOrders.json"><![CDATA[%dw 2.0
+
+type getAllOrders = Array<{|  orderNumber: Number {"typeId": "int"},   orderDate: String,   requiredDate: String,   shippedDate: String,   orderStatus: String,   customerNumber: Number {"typeId": "int"}|}> {"example": "[{\\\"orderNumber\\\":101,\\\"orderDate\\\":\\\"2021-05-11 15:45:50\\\",\\\"requiredDate\\\":\\\"2021-05-18 16:45:50\\\",\\\"shippedDate\\\":\\\"2021-05-13 17:45:50\\\",\\\"orderStatus\\\":\\\"shipped\\\",\\\"customerNumber\\\":10001},{\\\"orderNumber\\\":102,\\\"orderDate\\\":\\\"2021-05-11 15:45:50\\\",\\\"requiredDate\\\":\\\"2021-05-18 16:45:50\\\",\\\"shippedDate\\\":\\\"2021-05-13 17:45:50\\\",\\\"orderStatus\\\":\\\"shipped\\\",\\\"customerNumber\\\":10002}]"}
+
+]]></types:shape>
+    </types:type>
+    <types:type name="getOrdersById" format="json">
+      <types:shape format="weave" example="examples/getOrdersById.json"><![CDATA[%dw 2.0
+
+type getOrdersById = {|
+  orderNumber: Number {"typeId": "int"}, 
+  orderDate: String, 
+  requiredDate: String, 
+  shippedDate: String, 
+  orderStatus: String, 
+  customerNumber: Number {"typeId": "int"}
+|} {"example": "{\\\"orderNumber\\\":101,\\\"orderDate\\\":\\\"2021-05-11 15:45:50\\\",\\\"requiredDate\\\":\\\"2021-05-18 16:45:50\\\",\\\"shippedDate\\\":\\\"2021-05-13 17:45:50\\\",\\\"orderStatus\\\":\\\"shipped\\\",\\\"customerNumber\\\":10001}"}
+
+]]></types:shape>
+    </types:type>
+  </types:catalog>
+  <types:enrichment select="#d70b90d6-33da-4694-8b57-76c484642eec">
+    <types:processor-declaration>
+      <types:output-event>
+        <types:message>
+          <types:payload type="getAllOrders"/>
+        </types:message>
+      </types:output-event>
+    </types:processor-declaration>
+  </types:enrichment>
+  <types:enrichment select="#3eb0220d-7e58-4c8c-97d8-73d4b237186f">
+    <types:processor-declaration>
+      <types:output-event>
+        <types:message>
+          <types:payload type="getOrdersById"/>
+        </types:message>
+      </types:output-event>
+    </types:processor-declaration>
+  </types:enrichment>
+</types:mule>

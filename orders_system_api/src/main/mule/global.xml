@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:db="http://www.mulesoft.org/schema/mule/db"
+	xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="
+http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/current/mule-db.xsd 
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd"> 
+	
+	<http:listener-config name="orders_api-httpListenerConfig">
+        <http:listener-connection host="0.0.0.0" port="8081" />
+    </http:listener-config>
+    
+    <db:config name="My_Sql-Database_Config" doc:name="Database Config" doc:id="4f7e0c77-d50e-498d-bdef-2019dac319d4" >
+		<db:my-sql-connection host="${db.host}" port="${db.port}" user="${db.user}" password="${db.password}" database="${db.database}" />
+	</db:config>
+	<configuration-properties doc:name="Configuration properties" doc:id="7d256a6d-e70f-41fb-8692-d97e8ca23f04" file="orders-DEV.yaml" />
+	<configuration doc:name="Configuration" doc:id="58f29737-ff0d-4a73-b708-4d81138324ed" defaultErrorHandler-ref="globalError_Handler" />
+	<error-handler name="globalError_Handler" doc:id="29b746a7-5c74-45f9-9bac-16689e50a5b1" >
+		<on-error-continue enableNotifications="true" logException="true" doc:name="On Error Continue" doc:id="6bb5d48b-1e99-4d4d-8a09-e77197b7c786" type="VALIDATION:NULL">
+			<set-payload value='#["Entered value should not be null in post"]' doc:name="Set Payload" doc:id="560033e2-f4cf-4c01-9232-615b4627f886" />
+			<set-variable value="500" doc:name="httpStatus" doc:id="881b9aed-3bc5-40a3-8242-f10f29672425" variableName="httpStatus"/>
+		</on-error-continue>
+		<on-error-continue enableNotifications="true" logException="true" doc:name="On Error Continue" doc:id="2298581b-b62e-4ea6-ad68-b7ff3394db49" type="DB1:BAD_SQL_SYNTAX">
+			<set-payload value='#["Check sql syntax in get by id flow"]' doc:name="Set Payload" doc:id="41223992-4ef7-41c5-9ad0-08ae57e29d34" />
+			<set-variable value="500" doc:name="httpStatus" doc:id="beaf0265-d12c-430e-a004-9ba27b67f12e" variableName="httpStatus"/>
+		</on-error-continue>
+		<on-error-continue enableNotifications="true" logException="true" doc:name="On Error Continue" doc:id="a74726b3-3d93-4af9-a161-8991358cfccb" type="DB2:BAD_SQL_SYNTAX">
+			<set-payload value='#["Check SQL syntax in post flow"]' doc:name="Set Payload" doc:id="2c14a59e-c424-4b2c-94d7-45b46456ec57" />
+			<set-variable value="500" doc:name="httpStatus" doc:id="17ae4385-08f6-4018-8d06-5cd8e57764bc" variableName="httpStatus"/>
+		</on-error-continue>
+		<on-error-continue enableNotifications="true" logException="true" doc:name="On Error Continue" doc:id="7869ef51-2055-467d-8dc2-d42e2734c221" type="DB3:BAD_SQL_SYNTAX">
+			<set-payload value='#["Check SQL syntax of update in Patch flow"]' doc:name="Set Payload" doc:id="bc42a140-63f8-4d12-8c4f-629e5e377349" />
+			<set-variable value="500" doc:name="httpStatus" doc:id="c8cc311d-b2b7-4c7b-9ede-7b43199dd1df" variableName="httpStatus"/>
+		</on-error-continue>
+		<on-error-continue enableNotifications="true" logException="true" doc:name="On Error Continue" doc:id="0e581287-91a9-40dc-a902-b26a59ee5474" type="DB4:BAD_SQL_SYNTAX">
+			<set-payload value='#["Check SQL syntax of update in Put flow"]' doc:name="Set Payload" doc:id="48f84fc7-f275-49d0-8bb1-598cbb013a8e" />
+			<set-variable value="500" doc:name="httpStatus" doc:id="4ca61561-96a1-4067-8400-8609f071901c" variableName="httpStatus"/>
+		</on-error-continue>
+		<on-error-continue enableNotifications="true" logException="true" doc:name="On Error Continue" doc:id="2632260c-b8f2-448a-b1f4-30caa745050c" type="ANY">
+			<set-payload value='#[error.description]' doc:name="Set Payload" doc:id="149da444-2511-4e4a-bbfc-c9ab586583e5" />
+			<set-variable value="500" doc:name="httpStatus" doc:id="3660454c-487f-450d-b674-52c02b3c9415" variableName="httpStatus"/>
+		</on-error-continue>
+	</error-handler>
+	
+	
+	
+	
+	
+</mule>
